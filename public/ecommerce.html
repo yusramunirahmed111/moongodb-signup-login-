@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My E-Commerce</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 40px;
+      text-align: center;
+    }
+    .navbar {
+      background: #007BFF;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+    }
+    .products {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .product {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    Welcome, <span id="username">User</span> 👋 | <a href="#" onclick="logout()" style="color:white;">Logout</a>
+  </div>
+
+  <h1>🛒 My E-Commerce Store</h1>
+  <div class="products">
+    <div class="product"><h3>Product A</h3><p>$10</p></div>
+    <div class="product"><h3>Product B</h3><p>$20</p></div>
+    <div class="product"><h3>Product C</h3><p>$30</p></div>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("name");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "index.html"; 
+    } else {
+      document.getElementById("username").innerText = username;
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Signup</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #007BFF;
+      cursor: pointer;
+    }
+
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2 id="form-title">Signup</h2>
+
+    <!-- Signup Form -->
+    <form id="signup-form">
+      <input type="text" placeholder="Username" name="username" required>
+      <input type="email" placeholder="Email" name="email" required>
+      <input type="password" placeholder="Password" name="password" required>
+      <button type="submit">Signup</button>
+    </form>
+
+    <!-- Login Form -->
+    <form id="login-form" class="hidden">
+      <input type="email" placeholder="Email" name="email" required>
+      <input type="password" placeholder="Password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="toggle-link" onclick="toggleForm()">Already have an account? Login</div>
+    <div class="message" id="messageBox"></div>
+  </div>
+
+  <script>
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+    const formTitle = document.getElementById('form-title');
+    const toggleLink = document.querySelector('.toggle-link');
+    const messageBox = document.getElementById('messageBox');
+
+    // Switch between login and signup
+    function toggleForm() {
+      signupForm.classList.toggle('hidden');
+      loginForm.classList.toggle('hidden');
+      messageBox.innerText = '';
+
+      if (signupForm.classList.contains('hidden')) {
+        formTitle.innerText = 'Login';
+        toggleLink.innerText = "Don't have an account? Signup";
+      } else {
+        formTitle.innerText = 'Signup';
+        toggleLink.innerText = "Already have an account? Login";
+      }
+    }
+
+    // Signup
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.username.value,
+          email: form.email.value,
+          password: form.password.value
+        })
+      });
+
+      const data = await res.json();
+      messageBox.innerText = data.message || 'Signup successful!';
+      messageBox.style.color = res.ok ? 'green' : 'red';
+    });
+
+    // Login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email.value,
+          password: form.password.value
+        })
+      });
+
+      const data = await res.json();
+      messageBox.innerText = data.message || `Welcome, ${data.name}`;
+      messageBox.style.color = res.ok ? 'green' : 'red';
+    });
+  </script>
+</body>
+</html>
